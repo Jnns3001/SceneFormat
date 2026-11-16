@@ -29,7 +29,9 @@ Eine Szene besteht aus:
 Nicht Teil des Formats sind MTL/OBJ Format, Auflösung, Renderqualität (Abtastungen, Strahltiefe),
 programmspezifischer Zustand wie Bedienoberflächen und Beschleunigungsstrukturen.
 
-Datenmodell als Diagramm: [Szenenformat-Datenmodell](../blob/main/plantUML/Szenenformat-Datenmodell.puml)
+![Datenmodell](../blob/main/Szenenformat_Datenmodell.png)
+
+Datenmodell als Diagramm: [Szenenformat-Datenmodell](../blob/main/Szenenformat-Datenmodell.puml)
 
 ## 2. Begriffe
 

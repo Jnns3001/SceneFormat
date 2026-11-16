@@ -4,7 +4,7 @@ Code-Owner: Jannis Mayer
 
 # Szenen-Austauschformat – Spezifikation Version 1
 
-**Status:** Entwurf vom 2026-11-12, herausgegeben von der Gruppe Rusttracer.
+**Status:** Entwurf vom 2026-11-16, herausgegeben von der Gruppe Rusttracer.
 Rückmeldungen der anderen Gruppen fließen in diese Spezifikation ein.
 
 ## 1. Zweck und Umfang
@@ -58,12 +58,12 @@ Die Tabellen verwenden folgende Datentypen:
 
 | Typ         | JSON                                | Bedeutung                                                                    |
 | ----------- | ----------------------------------- | ---------------------------------------------------------------------------- |
-| `integer` | Zahl ohne Nachkommastellen          | –                                                                           |
+| `integer` | Ganzzahl                              | –                                                                           |
 | `number`  | Zahl                                | –                                                                           |
 | `string`  | String                              | –                                                                           |
 | `vec3`    | Array aus 3 Zahlen `[x, y, z]`    | Punkt oder Richtung                                                          |
 | `quat`    | Array aus 4 Zahlen `[x, y, z, w]` | Rotation als Quaternion; Leser normieren sie; `[0, 0, 0, 0]` ist ungültig |
-| `color`   | Array aus 3 Zahlen `[r, g, b]`    | Farbe; Komponenten ≥ 0                                                      |
+| `color`   | Array aus 3 Zahlen `[r, g, b]`    | Farbe; 0 ≤ Komponenten ≤ 1 (>1 erlaubt für sRGB oder HDR                        |
 | `path`    | String                              | Dateipfad nach [Abschnitt 10](#10-pfade)                                      |
 
 Weicht die interne Konvention eines Lesers ab, rechnet er beim Laden um.

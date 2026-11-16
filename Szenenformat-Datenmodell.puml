@@ -1,0 +1,159 @@
+'AI-Assisted 70%: Im Dialog mit KI ausgearbeitet; Entscheidungen von Jannis Mayer, Diagramm durch KI.
+'Code-Owner: Jannis Mayer
+
+@startuml Szenenformat_Datenmodell
+skinparam backgroundColor white
+skinparam defaultFontName "Segoe UI"
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam roundCorner 10
+skinparam ArrowColor #4A4A4A
+skinparam TitleFontSize 22
+skinparam class {
+  BackgroundColor #E8F1FB
+  BorderColor #2F6DB5
+  BorderThickness 1.4
+}
+skinparam note {
+  BackgroundColor #FFF8E1
+  BorderColor #D9B44A
+}
+hide empty members
+hide circle
+
+title Szenen-Austauschformat v1 – Datenmodell
+
+class "Scene document" as Scene {
+  version: integer
+  cameras: Camera[0..*]
+  objects: Object[0..*]
+  lights: Light[0..*]
+  background: Background [0..1]
+}
+
+class Camera {
+  name: string [0..1]
+  look_from: vec3 = [0, 0, 0]
+  look_at: vec3 = [0, 0, -1]
+  vup: vec3 = [0, 1, 0]
+  vfov_degrees: number = 90
+}
+
+abstract class Object {
+  type: string
+  name: string [0..1]
+}
+
+class "sphere" as Sphere {
+  center: vec3
+  radius: number
+}
+
+class "triangle" as Triangle {
+  vertices: vec3[3]
+}
+
+class "model" as Model {
+  path: path (OBJ)
+}
+
+class Transform {
+  translation: vec3 = [0, 0, 0]
+  rotation: quat = [0, 0, 0, 1]
+  scale: vec3 = [1, 1, 1]
+}
+
+class Material {
+  ambient: color = [0, 0, 0]
+  diffuse: color = [0.8, 0.8, 0.8]
+  specular: color = [0, 0, 0]
+  shininess: number = 0
+  opacity: number = 1
+}
+
+abstract class Light {
+  type: string
+  name: string [0..1]
+  color: color = [1, 1, 1]
+  intensity: number = 1
+}
+
+class "point" as PointLight {
+  position: vec3
+}
+
+class "directional" as DirectionalLight {
+  direction: vec3
+}
+
+class "ambient" as AmbientLight
+
+abstract class Background {
+  type: string
+}
+
+class "solid" as Solid {
+  color: color
+}
+
+class "gradient" as Gradient {
+  bottom: color
+  top: color
+}
+
+class "environment" as Environment {
+  path: path
+  projection: string = "equirectangular"
+  rotation: quat = [0, 0, 0, 1]
+  intensity: number = 1
+}
+
+package "package (files)" #FAFBFD {
+  class "OBJ file" as Obj
+  class "MTL file" as Mtl
+  class "texture" as Texture
+  class "environment image" as EnvImage
+}
+
+Scene "1" *-- "0..*" Camera : cameras\n(erste = aktiv)
+Scene "1" *-- "0..*" Object : objects\n(Reihenfolge bleibt)
+Scene "1" *-- "0..*" Light : lights
+Scene "1" *-- "0..1" Background : background
+
+Object <|-- Sphere
+Object <|-- Triangle
+Object <|-- Model
+
+Sphere *-- "0..1" Material
+Triangle *-- "0..1" Material
+Model *-- "0..1" Transform
+
+Light <|-- PointLight
+Light <|-- DirectionalLight
+Light <|-- AmbientLight
+
+Background <|-- Solid
+Background <|-- Gradient
+Background <|-- Environment
+
+Model ..> Obj : path
+Obj ..> "0..*" Mtl : mtllib
+Mtl ..> "0..*" Texture : map_*
+Environment ..> EnvImage : path
+
+note right of Scene
+  Pflicht ist nur version; { "version": 1 } ist gültig.
+  cameras fehlt oder leer: Standardkamera.
+  lights fehlt: Leser wählt; [] heißt keine Lichter.
+  "= Wert": Standard, wenn das Feld fehlt.
+  [0..1]: optional ohne Standard.
+  Koordinaten rechtshändig, +y oben;
+  Farben linear RGB.
+end note
+
+note bottom of Model
+  Gleicher Pfad in mehreren Objekten:
+  mehrere Platzierungen derselben Geometrie.
+end note
+
+@enduml
